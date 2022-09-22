@@ -11,7 +11,7 @@ function ActionInputPanel() {
       <Button
         size="large"
         variant="contained"
-        onClick={() => getStatus("59000509805747")}
+        onClick={() => getStatus("20450590227047")}
       >
         Get Status TTN
       </Button>
