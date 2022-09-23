@@ -7,7 +7,7 @@ import Navigation from "./components/navigation";
 function App() {
   return (
     <ThemeUI>
-      <Grid className="App">
+      <Grid bgcolor="background.default" className="App">
         <Navigation />
         <Outlet />
       </Grid>

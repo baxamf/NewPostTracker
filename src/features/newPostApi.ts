@@ -7,7 +7,7 @@ export const newPostApi = createApi({
   tagTypes: ["Order"],
   endpoints: (build) => ({
     getStatus: build.mutation({
-      query: (tth) => ({
+      query: (tth: string) => ({
         url: "",
         method: "POST",
         body: {
