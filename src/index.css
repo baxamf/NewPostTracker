@@ -23,8 +23,11 @@ body {
   justify-content: center;
 }
 
+aside {
+  flex: 1;
+}
+
 .grid-container {
-  max-width: 600px;
   display: grid;
   gap: 2rem;
   padding: 1rem 2rem;

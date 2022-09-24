@@ -1,4 +1,4 @@
-import { Card, Grid, Typography } from "@mui/material";
+import { Button, Card, Grid, Typography } from "@mui/material";
 import { useAppSelector } from "../../app/hooks";
 import { selectPackage } from "../../features/packageSlice";
 
@@ -7,22 +7,18 @@ function Status() {
   return (
     <>
       {packageData.Status && (
-        <Card variant="outlined" className="grid-container">
+        <Card variant="outlined" className="grid-container" component="section">
           <Typography variant="h6">{packageData.Status}</Typography>
           <Grid container display="grid" alignItems="baseline">
             <Typography variant="h6">Відправлено: </Typography>
-            <Typography variant="subtitle2">
-              {packageData.CitySender}
-            </Typography>
+            <Button variant="outlined">{packageData.CitySender}</Button>
             <Typography variant="body1">
               {packageData.WarehouseSender}
             </Typography>
           </Grid>
           <Grid container display="grid" alignItems="baseline">
             <Typography variant="h6">Отримано: </Typography>
-            <Typography variant="subtitle2">
-              {packageData.CityRecipient}
-            </Typography>
+            <Button variant="outlined">{packageData.CityRecipient}</Button>
             <Typography variant="body1">
               {packageData.WarehouseRecipient}
             </Typography>

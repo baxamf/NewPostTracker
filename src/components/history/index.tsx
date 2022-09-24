@@ -1,4 +1,4 @@
-import { Button, Card, Typography } from "@mui/material";
+import { Button, Card, Grid, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -47,25 +47,28 @@ function History() {
   };
 
   return (
-    <>
+    <Grid component="aside" minWidth="250px">
       {history.length ? (
         <Card variant="outlined" className="grid-container">
           <Typography variant="h6">Історія запитів</Typography>
-          {history.map((el) => (
-            <Button
-              variant="outlined"
-              onClick={() => historyGetStatus(el)}
-              key={el}
-            >
-              {el}
-            </Button>
-          ))}
+          <Grid container display="grid" gap="1rem">
+            {history.map((el) => (
+              <Button
+                variant="outlined"
+                onClick={() => historyGetStatus(el)}
+                key={el}
+              >
+                {el}
+              </Button>
+            ))}
+          </Grid>
+
           <Button size="large" color="error" onClick={clearHistoryStorage}>
             Видалити історію запитів
           </Button>
         </Card>
       ) : null}
-    </>
+    </Grid>
   );
 }
 

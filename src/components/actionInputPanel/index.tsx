@@ -45,7 +45,7 @@ function ActionInputPanel() {
   };
 
   return (
-    <Grid container gap="1rem" justifyContent="center">
+    <Grid container gap="1rem" justifyContent="flex-start">
       {isError && ErrorWindow("Лайно з підключенням, спробуйте ще раз")}
       {error && ErrorWindow("ТТН має складатися з 14 цифр без пробілів")}
       <TextField

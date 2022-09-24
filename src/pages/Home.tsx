@@ -8,10 +8,10 @@ function Home() {
     <>
       <Grid component="main" className="grid-container">
         <ActionInputPanel />
-        <Status />
-      </Grid>
-      <Grid component="aside" className="grid-container">
-        <History />
+        <Grid container gap="2rem" alignItems="flex-start">
+          <Status />
+          <History />
+        </Grid>
       </Grid>
     </>
   );

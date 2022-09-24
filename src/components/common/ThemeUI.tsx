@@ -6,7 +6,7 @@ export default function ThemeUI({ children }: React.PropsWithChildren) {
     () =>
       createTheme({
         typography: {
-          fontFamily: "Poppins",
+          fontFamily: "Consolas",
         },
         palette: {
           primary: {
