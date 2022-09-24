@@ -1,5 +1,5 @@
 import { Button, CircularProgress, Grid, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { pushTth, selectHistory } from "../../features/historySlice";
 import { useGetStatusMutation } from "../../features/newPostApi";
@@ -45,7 +45,7 @@ function ActionInputPanel() {
   };
 
   return (
-    <Grid container gap="1rem" justifyContent="flex-start">
+    <Grid container gap="1rem">
       {isError && ErrorWindow("Лайно з підключенням, спробуйте ще раз")}
       {error && ErrorWindow("ТТН має складатися з 14 цифр без пробілів")}
       <TextField

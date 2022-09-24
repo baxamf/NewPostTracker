@@ -1,9 +1,18 @@
 import { Button, Card, Grid, Typography } from "@mui/material";
-import { useAppSelector } from "../../app/hooks";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { setAddress } from "../../features/officesSlice";
 import { selectPackage } from "../../features/packageSlice";
 
 function Status() {
   const packageData = useAppSelector(selectPackage);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const cityAddresses = (city: string) => {
+    dispatch(setAddress(city));
+    navigate("/offices");
+  };
   return (
     <>
       {packageData.Status && (
@@ -11,14 +20,24 @@ function Status() {
           <Typography variant="h6">{packageData.Status}</Typography>
           <Grid container display="grid" alignItems="baseline">
             <Typography variant="h6">Відправлено: </Typography>
-            <Button variant="outlined">{packageData.CitySender}</Button>
+            <Button
+              onClick={() => cityAddresses(packageData.CitySender)}
+              variant="outlined"
+            >
+              {packageData.CitySender}
+            </Button>
             <Typography variant="body1">
               {packageData.WarehouseSender}
             </Typography>
           </Grid>
           <Grid container display="grid" alignItems="baseline">
             <Typography variant="h6">Отримано: </Typography>
-            <Button variant="outlined">{packageData.CityRecipient}</Button>
+            <Button
+              onClick={() => cityAddresses(packageData.CityRecipient)}
+              variant="outlined"
+            >
+              {packageData.CityRecipient}
+            </Button>
             <Typography variant="body1">
               {packageData.WarehouseRecipient}
             </Typography>

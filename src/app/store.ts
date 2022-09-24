@@ -2,6 +2,7 @@ import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import counterReducer from "../features/counter/counterSlice";
 import historyReducer from "../features/historySlice";
 import { newPostApi } from "../features/newPostApi";
+import officesReducer from "../features/officesSlice";
 import packageReducer from "../features/packageSlice";
 import tthValueReducer from "../features/tthValueSlice";
 
@@ -10,6 +11,7 @@ export const store = configureStore({
     tthValue: tthValueReducer,
     package: packageReducer,
     history: historyReducer,
+    offices: officesReducer,
     counter: counterReducer,
     [newPostApi.reducerPath]: newPostApi.reducer,
   },

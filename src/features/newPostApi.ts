@@ -4,7 +4,7 @@ import NEWPOSTURL from "../constants";
 export const newPostApi = createApi({
   reducerPath: "newPostApi",
   baseQuery: fetchBaseQuery({ baseUrl: NEWPOSTURL }),
-  tagTypes: ["Order"],
+  tagTypes: ["Order", "Addreses"],
   endpoints: (build) => ({
     getStatus: build.mutation({
       query: (tth: string) => ({
@@ -25,7 +25,25 @@ export const newPostApi = createApi({
       }),
       invalidatesTags: ["Order"],
     }),
+    getAdresses: build.mutation({
+      query: (city: string) => ({
+        url: "",
+        method: "POST",
+        body: {
+          apiKey: "853151f9823953b980cea3dc6b9d795b",
+          modelName: "Address",
+          calledMethod: "getWarehouses",
+          methodProperties: {
+            CityName: city,
+            Page: "1",
+            Limit: "50",
+            Language: "UA",
+          },
+        },
+      }),
+      invalidatesTags: ["Addreses"],
+    }),
   }),
 });
 
-export const { useGetStatusMutation } = newPostApi;
+export const { useGetStatusMutation, useGetAdressesMutation } = newPostApi;
