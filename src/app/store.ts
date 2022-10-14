@@ -1,5 +1,6 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import counterReducer from "../features/counter/counterSlice";
+import { dbApi } from "../features/dbApi";
 import historyReducer from "../features/historySlice";
 import { newPostApi } from "../features/newPostApi";
 import officesReducer from "../features/officesSlice";
@@ -14,9 +15,12 @@ export const store = configureStore({
     offices: officesReducer,
     counter: counterReducer,
     [newPostApi.reducerPath]: newPostApi.reducer,
+    [dbApi.reducerPath]: dbApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(newPostApi.middleware),
+    getDefaultMiddleware()
+      .concat(newPostApi.middleware)
+      .concat(dbApi.middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;

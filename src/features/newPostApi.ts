@@ -36,7 +36,7 @@ export const newPostApi = createApi({
           methodProperties: {
             CityName: city,
             Page: "1",
-            Limit: "50",
+            Limit: "10",
             Language: "UA",
           },
         },

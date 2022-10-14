@@ -6,8 +6,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
+import {
+  useAddDbCityMutation,
+  useAddDbWarhousesMutation,
+  useLazyCheckDbCityQuery,
+} from "../features/dbApi";
 import { useGetAdressesMutation } from "../features/newPostApi";
 import { selectOffices, setCityValue } from "../features/officesSlice";
 import useError from "../hooks/useError";
@@ -17,13 +22,17 @@ type InputEvent = React.ChangeEvent<HTMLInputElement>;
 function Offices() {
   const [getAddresList, { data, isLoading, isError, isSuccess }] =
     useGetAdressesMutation();
+  const [checkDbCity] = useLazyCheckDbCityQuery();
+  const [addDbCity] = useAddDbCityMutation();
+  const [addDbWarhouses] = useAddDbWarhousesMutation();
+  const [warhouses, setWarhouses] = useState([]);
   const cityName: string = useAppSelector(selectOffices);
   const dispatch = useAppDispatch();
   const { ErrorWindow } = useError();
 
   useEffect(() => {
     if (cityName) {
-      getAddresList(cityName);
+      showOffices();
     }
   }, []);
 
@@ -31,9 +40,33 @@ function Offices() {
     dispatch(setCityValue(e.target.value));
   };
 
-  const showOffices = () => {
-    getAddresList(cityName);
-  };
+  function showOffices() {
+    checkDbCity(cityName)
+      .unwrap()
+      .then((res) => (res ? setWarhouses(res) : getNewWarhouses()));
+  }
+
+  function getNewWarhouses() {
+    getAddresList(cityName)
+      .unwrap()
+      .then((res) => {
+        if (res.data && res.data.length) {
+          saveNewDataToDb(res.data);
+        }
+      });
+  }
+
+  function saveNewDataToDb(newData: any[]) {
+    addDbCity(cityName)
+      .unwrap()
+      .then((res) => saveNewWarhousesToDb(res.id, newData));
+  }
+
+  function saveNewWarhousesToDb(cityId: number, warhouses: any[]) {
+    addDbWarhouses({ cityId, warhouses })
+      .unwrap()
+      .then((res) => console.log(res));
+  }
 
   return (
     <Grid className="grid-container">
