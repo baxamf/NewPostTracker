@@ -1,26 +1,29 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import counterReducer from "../features/counter/counterSlice";
 import { dbApi } from "../features/dbApi";
-import historyReducer from "../features/historySlice";
 import { newPostApi } from "../features/newPostApi";
+import { authApi } from "../features/authApi";
 import officesReducer from "../features/officesSlice";
 import packageReducer from "../features/packageSlice";
 import tthValueReducer from "../features/tthValueSlice";
+import authReducer from "../features/userSlice";
 
 export const store = configureStore({
   reducer: {
+    auth: authReducer,
     tthValue: tthValueReducer,
     package: packageReducer,
-    history: historyReducer,
     offices: officesReducer,
     counter: counterReducer,
+    [authApi.reducerPath]: authApi.reducer,
     [newPostApi.reducerPath]: newPostApi.reducer,
     [dbApi.reducerPath]: dbApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(newPostApi.middleware)
-      .concat(dbApi.middleware),
+      .concat(dbApi.middleware)
+      .concat(authApi.middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;

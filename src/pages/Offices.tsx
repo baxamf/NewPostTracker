@@ -20,15 +20,14 @@ import useError from "../hooks/useError";
 type InputEvent = React.ChangeEvent<HTMLInputElement>;
 
 function Offices() {
-  const [getAddresList, { data, isLoading, isError, isSuccess }] =
-    useGetAdressesMutation();
+  const [getAddresList, { isLoading, isError }] = useGetAdressesMutation();
   const [checkDbCity] = useLazyCheckDbCityQuery();
   const [addDbCity] = useAddDbCityMutation();
   const [addDbWarhouses] = useAddDbWarhousesMutation();
   const [warhouses, setWarhouses] = useState([]);
   const cityName: string = useAppSelector(selectOffices);
   const dispatch = useAppDispatch();
-  const { ErrorWindow } = useError();
+  const { error, setError, ErrorWindow } = useError();
 
   useEffect(() => {
     if (cityName) {
@@ -52,6 +51,8 @@ function Offices() {
       .then((res) => {
         if (res.data && res.data.length) {
           saveNewDataToDb(res.data);
+        } else {
+          setError(true);
         }
       });
   }
@@ -59,13 +60,15 @@ function Offices() {
   function saveNewDataToDb(newData: any[]) {
     addDbCity(cityName)
       .unwrap()
-      .then((res) => saveNewWarhousesToDb(res.id, newData));
+      .then((res) => res && saveNewWarhousesToDb(res.id, newData));
   }
 
   function saveNewWarhousesToDb(cityId: number, warhouses: any[]) {
     addDbWarhouses({ cityId, warhouses })
       .unwrap()
-      .then((res) => console.log(res));
+      .then((res) => {
+        res && setWarhouses(res);
+      });
   }
 
   return (
@@ -77,17 +80,13 @@ function Offices() {
         </Button>
       </Grid>
       {isError && ErrorWindow("Лайно з підключенням, спробуйте ще раз")}
+      {error && ErrorWindow("Не має адрес за цим запросом")}
       {isLoading && <CircularProgress />}
-      {isSuccess &&
-        data.data.map((office: { Description: string; SiteKey: string }) => (
-          <Card
-            key={office.SiteKey}
-            variant="outlined"
-            className="grid-container"
-          >
-            <Typography variant="body1">{office.Description}</Typography>
-          </Card>
-        ))}
+      {warhouses.map((office: { description: string; id: number }) => (
+        <Card key={office.id} variant="outlined" className="grid-container">
+          <Typography variant="body1">{office.description}</Typography>
+        </Card>
+      ))}
     </Grid>
   );
 }

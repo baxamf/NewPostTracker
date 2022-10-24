@@ -1,7 +1,7 @@
 import { Button, CircularProgress, Grid, TextField } from "@mui/material";
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { pushTth, selectHistory } from "../../features/historySlice";
+import { useAddTtnMutation } from "../../features/dbApi";
 import { useGetStatusMutation } from "../../features/newPostApi";
 import { setPackage } from "../../features/packageSlice";
 import { selectTthValue, setTthValue } from "../../features/tthValueSlice";
@@ -15,7 +15,7 @@ function ActionInputPanel() {
   const dispatch = useAppDispatch();
   const { error, setError, ErrorWindow } = useError();
   const tthValue = useAppSelector(selectTthValue);
-  const history = useAppSelector(selectHistory);
+  const [addTtn] = useAddTtnMutation();
 
   useEffect(() => {
     if (isSuccess) {
@@ -37,11 +37,7 @@ function ActionInputPanel() {
       return setError(true);
     }
     getStatus(tthValue);
-    if (!history.some((historyTth) => historyTth === tthValue)) {
-      const updateStorage = [...history, tthValue];
-      localStorage.setItem("history", JSON.stringify(updateStorage));
-      dispatch(pushTth(tthValue));
-    }
+    addTtn(tthValue);
   };
 
   return (

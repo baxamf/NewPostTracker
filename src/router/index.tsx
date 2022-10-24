@@ -3,17 +3,18 @@ import App from "../App";
 import Home from "../pages/Home";
 import Offices from "../pages/Offices";
 
-function NewPostTrackerRouter () {
-  return(
+function NewPostTrackerRouter() {
+  return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App/>}>
-          <Route index element={<Home/>}/>
-          <Route path="offices" element={<Offices/>}/>
+        <Route path="/" element={<App />}>
+          <Route index element={<Home />} />
+          <Route path="offices" element={<Offices />} />
         </Route>
+        <Route path="*" element={<App />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
 export default NewPostTrackerRouter;

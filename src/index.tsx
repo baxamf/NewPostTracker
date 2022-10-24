@@ -10,11 +10,9 @@ const container = document.getElementById("root")!;
 const root = createRoot(container);
 
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <NewPostTrackerRouter />
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <NewPostTrackerRouter />
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

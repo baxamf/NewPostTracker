@@ -1,26 +1,16 @@
 import { Button, Card, Grid, Typography } from "@mui/material";
 import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import {
-  clearHistory,
-  selectHistory,
-  setHistory,
-} from "../../features/historySlice";
+import { useAppDispatch } from "../../app/hooks";
+import { useDelTtnMutation, useGetTtnQuery } from "../../features/dbApi";
 import { useGetStatusMutation } from "../../features/newPostApi";
 import { setPackage } from "../../features/packageSlice";
 import { setTthValue } from "../../features/tthValueSlice";
 
 function History() {
   const dispatch = useAppDispatch();
-  const history = useAppSelector(selectHistory);
   const [getStatus, { data, isSuccess }] = useGetStatusMutation();
-
-  useEffect(() => {
-    const storage = localStorage.getItem("history");
-    if (storage) {
-      dispatch(setHistory(JSON.parse(storage)));
-    }
-  }, []);
+  const [delTtn] = useDelTtnMutation();
+  const { data: ttnData, isSuccess: ttnSuccess } = useGetTtnQuery("");
 
   useEffect(() => {
     if (isSuccess) {
@@ -42,23 +32,22 @@ function History() {
   };
 
   const clearHistoryStorage = () => {
-    localStorage.removeItem("history");
-    dispatch(clearHistory());
+    delTtn("");
   };
 
   return (
     <Grid component="aside" minWidth="250px">
-      {history.length ? (
+      {ttnSuccess && ttnData.length ? (
         <Card variant="outlined" className="grid-container">
           <Typography variant="h6">Історія запитів</Typography>
           <Grid container display="grid" gap="1rem">
-            {history.map((el) => (
+            {ttnData.map((el: { id: number; value: string }) => (
               <Button
                 variant="outlined"
-                onClick={() => historyGetStatus(el)}
-                key={el}
+                onClick={() => historyGetStatus(el.value)}
+                key={el.id}
               >
-                {el}
+                {el.value}
               </Button>
             ))}
           </Grid>

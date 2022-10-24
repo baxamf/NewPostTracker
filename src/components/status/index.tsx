@@ -1,7 +1,7 @@
 import { Button, Card, Grid, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { setAddress } from "../../features/officesSlice";
+import { setCityValue } from "../../features/officesSlice";
 import { selectPackage } from "../../features/packageSlice";
 
 function Status() {
@@ -10,7 +10,7 @@ function Status() {
   const navigate = useNavigate();
 
   const cityAddresses = (city: string) => {
-    dispatch(setAddress(city));
+    dispatch(setCityValue(city));
     navigate("/offices");
   };
   return (
