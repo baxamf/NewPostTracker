@@ -1,4 +1,4 @@
-import { Grid, Button, Typography } from "@mui/material";
+import { Grid, Button } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../../features/userSlice";
@@ -31,7 +31,17 @@ function Navigation() {
       >
         Адреси
       </Button>
-      {user && <UserInfo username={user.username} />}
+      {user ? (
+        <UserInfo username={user.username} />
+      ) : (
+        <Button
+          size="large"
+          variant={pathname === "/login" ? "outlined" : "text"}
+          onClick={() => navigate("login")}
+        >
+          Логін/Регістрація
+        </Button>
+      )}
     </Grid>
   );
 }

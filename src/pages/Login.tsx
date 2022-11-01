@@ -1,9 +1,9 @@
 import { Button, Grid, TextField } from "@mui/material";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../app/hooks";
 import {
   LoginRequest,
-  ServerError,
   useLoginMutation,
   useRegistrationMutation,
 } from "../features/authApi";
@@ -12,6 +12,7 @@ import useError from "../hooks/useError";
 import validateForm from "../service/validate";
 
 export default function Login() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [login] = useLoginMutation();
   const [registration] = useRegistrationMutation();
@@ -27,8 +28,7 @@ export default function Login() {
   }: React.ChangeEvent<HTMLInputElement>) =>
     setFormState((prev) => ({ ...prev, [name]: value }));
 
-  const onLoginSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
+  const queryLogReg = async (query: string) => {
     const validate = validateForm(formState);
     if (validate.validateError) {
       setError(true);
@@ -36,30 +36,26 @@ export default function Login() {
       return;
     }
     try {
-      const user = await login(formState).unwrap();
+      const user =
+        query === "login"
+          ? await login(formState).unwrap()
+          : await registration(formState).unwrap();
       localStorage.setItem("token", user.accessToken);
       dispatch(setCredentials(user));
+      navigate("/");
     } catch (e: any) {
       setError(true);
       setErrMessage(e.data.message);
     }
   };
 
+  const onLoginSubmit = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    queryLogReg("login");
+  };
+
   const onRegistration = async () => {
-    const validate = validateForm(formState);
-    if (validate.validateError) {
-      setError(true);
-      setErrMessage(validate.errMessage);
-      return;
-    }
-    try {
-      const user = await registration(formState).unwrap();
-      localStorage.setItem("token", user.accessToken);
-      dispatch(setCredentials(user));
-    } catch (e: any) {
-      setError(true);
-      setErrMessage(e.data.message);
-    }
+    queryLogReg("registration");
   };
 
   return (

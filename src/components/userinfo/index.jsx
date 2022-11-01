@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useAppDispatch } from "../../app/hooks";
 import { useLogoutMutation } from "../../features/authApi";
 import { resetUser } from "../../features/userSlice";

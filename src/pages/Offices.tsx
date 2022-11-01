@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
   useAddDbCityMutation,
@@ -20,19 +21,24 @@ import useError from "../hooks/useError";
 type InputEvent = React.ChangeEvent<HTMLInputElement>;
 
 function Offices() {
+  const navigate = useNavigate();
   const [getAddresList, { isLoading, isError }] = useGetAdressesMutation();
   const [checkDbCity] = useLazyCheckDbCityQuery();
   const [addDbCity] = useAddDbCityMutation();
   const [addDbWarhouses] = useAddDbWarhousesMutation();
   const [warhouses, setWarhouses] = useState([]);
-  const cityName: string = useAppSelector(selectOffices);
+  const cityName = useAppSelector(selectOffices);
   const dispatch = useAppDispatch();
   const { error, setError, ErrorWindow } = useError();
+  const [errMessage, setErrMessage] = useState("");
 
   useEffect(() => {
     if (cityName) {
       showOffices();
     }
+    return () => {
+      dispatch(setCityValue(""));
+    };
   }, []);
 
   const setCity = (e: InputEvent) => {
@@ -42,7 +48,14 @@ function Offices() {
   function showOffices() {
     checkDbCity(cityName)
       .unwrap()
-      .then((res) => (res ? setWarhouses(res) : getNewWarhouses()));
+      .then((res) => (res ? setWarhouses(res) : getNewWarhouses()))
+      .catch((e) => {
+        if (e.status === 401) {
+          return navigate("/login");
+        }
+        setErrMessage(e.data.message);
+        setError(true);
+      });
   }
 
   function getNewWarhouses() {
@@ -52,6 +65,7 @@ function Offices() {
         if (res.data && res.data.length) {
           saveNewDataToDb(res.data);
         } else {
+          setErrMessage("Немає адрес за цим запросом");
           setError(true);
         }
       });
@@ -80,7 +94,7 @@ function Offices() {
         </Button>
       </Grid>
       {isError && ErrorWindow("Лайно з підключенням, спробуйте ще раз")}
-      {error && ErrorWindow("Не має адрес за цим запросом")}
+      {error && ErrorWindow(errMessage)}
       {isLoading && <CircularProgress />}
       {warhouses.map((office: { description: string; id: number }) => (
         <Card key={office.id} variant="outlined" className="grid-container">
