@@ -4,6 +4,7 @@ export const dbApi = createApi({
   reducerPath: "dbApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:5000/api/",
+    credentials: "include",
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");
       if (token) {
@@ -14,20 +15,6 @@ export const dbApi = createApi({
   }),
   tagTypes: ["dbAdresses", "ttn"],
   endpoints: (build) => ({
-    addDbCity: build.mutation({
-      query: (city: string) => ({
-        url: "city/",
-        method: "POST",
-        body: { value: city },
-      }),
-    }),
-    addDbWarhouses: build.mutation({
-      query: (newDbdata) => ({
-        url: "warhouse/",
-        method: "POST",
-        body: { ...newDbdata },
-      }),
-    }),
     checkDbCity: build.query({
       query: (city: string) => ({
         url: `city/?value=${city}`,
@@ -60,8 +47,6 @@ export const dbApi = createApi({
 });
 
 export const {
-  useAddDbCityMutation,
-  useAddDbWarhousesMutation,
   useLazyCheckDbCityQuery,
   useAddTtnMutation,
   useGetTtnQuery,
