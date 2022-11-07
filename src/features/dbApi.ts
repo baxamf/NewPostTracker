@@ -1,4 +1,15 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
+import { PackageInitilaState } from "./packageSlice";
+
+interface TtnRequest {
+  value:string
+  userId:number
+}
+
+interface TtnResponse {
+  id: number,
+  value: string
+}
 
 export const dbApi = createApi({
   reducerPath: "dbApi",
@@ -21,24 +32,24 @@ export const dbApi = createApi({
         method: "GET",
       }),
     }),
-    addTtn: build.mutation({
-      query: (ttn: string) => ({
+    addTtn: build.mutation<PackageInitilaState, TtnRequest>({
+      query: (newTtn) => ({
         url: "ttn/",
         method: "POST",
-        body: { value: ttn },
+        body: newTtn,
       }),
       invalidatesTags: ["ttn"],
     }),
     delTtn: build.mutation({
-      query: () => ({
-        url: "ttn/",
+      query: (id:number) => ({
+        url: `ttn/?userId=${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["ttn"],
     }),
-    getTtn: build.query({
-      query: () => ({
-        url: "ttn/",
+    getTtn: build.query<TtnResponse[], number>({
+      query: (id) => ({
+        url: `ttn/?userId=${id}`,
         method: "GET",
       }),
       providesTags: ["ttn"],

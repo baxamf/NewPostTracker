@@ -1,47 +1,36 @@
-import { Button, Card, Grid, Typography } from "@mui/material";
-import { useEffect } from "react";
+import {
+  Button,
+  Card,
+  CircularProgress,
+  Grid,
+  Typography,
+} from "@mui/material";
 import { useAppDispatch } from "../../app/hooks";
 import { useDelTtnMutation, useGetTtnQuery } from "../../features/dbApi";
-import { useGetStatusMutation } from "../../features/newPostApi";
-import { setPackage } from "../../features/packageSlice";
 import { setTthValue } from "../../features/tthValueSlice";
+import { User } from "../../features/authApi";
 
-function History() {
+function History(prop: { user: User }) {
   const dispatch = useAppDispatch();
-  const [getStatus, { data, isSuccess }] = useGetStatusMutation();
   const [delTtn] = useDelTtnMutation();
-  const { data: ttnData, isSuccess: ttnSuccess } = useGetTtnQuery("");
-
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch(
-        setPackage({
-          Status: data.data[0].Status,
-          CitySender: data.data[0].CitySender,
-          WarehouseSender: data.data[0].WarehouseSender,
-          CityRecipient: data.data[0].CityRecipient,
-          WarehouseRecipient: data.data[0].WarehouseRecipient,
-        })
-      );
-    }
-  }, [data]);
+  const { data, isSuccess, isLoading } = useGetTtnQuery(prop.user.id);
 
   const historyGetStatus = (tth: string) => {
-    getStatus(tth);
     dispatch(setTthValue(tth));
   };
 
   const clearHistoryStorage = () => {
-    delTtn("");
+    delTtn(prop.user.id);
   };
 
   return (
     <Grid component="aside" minWidth="250px">
-      {ttnSuccess && ttnData.length ? (
+      {isLoading && <CircularProgress />}
+      {isSuccess && data.length ? (
         <Card variant="outlined" className="grid-container">
           <Typography variant="h6">Історія запитів</Typography>
           <Grid container display="grid" gap="1rem">
-            {ttnData.map((el: { id: number; value: string }) => (
+            {data.map((el) => (
               <Button
                 variant="outlined"
                 onClick={() => historyGetStatus(el.value)}

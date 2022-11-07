@@ -24,9 +24,10 @@ const packageSlice = createSlice({
   reducers: {
     setPackage: (state, action: PayloadAction<PackageInitilaState>) =>
       action.payload,
+    resetPackage: () => initialState
   },
 });
 
 export const selectPackage = (state: RootState) => state.package;
-export const { setPackage } = packageSlice.actions;
+export const { setPackage, resetPackage } = packageSlice.actions;
 export default packageSlice.reducer;

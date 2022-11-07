@@ -1,59 +1,50 @@
-import { Button, CircularProgress, Grid, TextField } from "@mui/material";
-import React, { useEffect } from "react";
+import { Button, Grid, TextField } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { useAddTtnMutation } from "../../features/dbApi";
-import { useGetStatusMutation } from "../../features/newPostApi";
-import { setPackage } from "../../features/packageSlice";
 import { selectTthValue, setTthValue } from "../../features/tthValueSlice";
 import useError from "../../hooks/useError";
-
 type InputEvent = React.ChangeEvent<HTMLInputElement>;
 
 function ActionInputPanel() {
-  const [getStatus, { data, isLoading, isError, isSuccess }] =
-    useGetStatusMutation();
   const dispatch = useAppDispatch();
   const { error, setError, ErrorWindow } = useError();
+  const [errMessage, setErrMessage] = useState("");
   const tthValue = useAppSelector(selectTthValue);
-  const [addTtn] = useAddTtnMutation();
+  const [tth, setTth] = useState("");
 
   useEffect(() => {
-    if (isSuccess) {
-      dispatch(
-        setPackage({
-          Status: data.data[0].Status,
-          CitySender: data.data[0].CitySender,
-          WarehouseSender: data.data[0].WarehouseSender,
-          CityRecipient: data.data[0].CityRecipient,
-          WarehouseRecipient: data.data[0].WarehouseRecipient,
-        })
-      );
-    }
-  }, [data]);
+    setTth(tthValue);
+  }, [tthValue]);
 
-  const setInputTtn = (e: InputEvent) => dispatch(setTthValue(e.target.value));
+  useEffect(
+    () => () => {
+      dispatch(setTthValue(""));
+    },
+    []
+  );
+
+  const setInputTtn = (e: InputEvent) => setTth(e.target.value);
+
   const getStatusHandler = () => {
-    if (!/^[0-9]{14}$/gm.test(tthValue)) {
+    if (!/^[0-9]{14}$/gm.test(tth)) {
+      setErrMessage("ТТН має складатися з 14 цифр без пробілів");
       return setError(true);
     }
-    getStatus(tthValue);
-    addTtn(tthValue);
+    dispatch(setTthValue(tth));
   };
 
   return (
     <Grid container gap="1rem">
-      {isError && ErrorWindow("Лайно з підключенням, спробуйте ще раз")}
-      {error && ErrorWindow("ТТН має складатися з 14 цифр без пробілів")}
+      {error && ErrorWindow(errMessage)}
       <TextField
         variant="outlined"
         label="TTH"
-        value={tthValue}
+        value={tth}
         onChange={setInputTtn}
       />
       <Button size="large" variant="contained" onClick={getStatusHandler}>
         Відстежити
       </Button>
-      {isLoading && <CircularProgress />}
     </Grid>
   );
 }

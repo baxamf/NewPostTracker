@@ -1,5 +1,4 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import counterReducer from "../features/counter/counterSlice";
 import { dbApi } from "../features/dbApi";
 import { newPostApi } from "../features/newPostApi";
 import { authApi } from "../features/authApi";
@@ -14,7 +13,6 @@ export const store = configureStore({
     tthValue: tthValueReducer,
     package: packageReducer,
     offices: officesReducer,
-    counter: counterReducer,
     [authApi.reducerPath]: authApi.reducer,
     [newPostApi.reducerPath]: newPostApi.reducer,
     [dbApi.reducerPath]: dbApi.reducer,
